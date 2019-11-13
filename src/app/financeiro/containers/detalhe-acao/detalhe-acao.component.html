@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">
+      Ações
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="grid">
+	  <ion-row class="header-grid">
+		<ion-col>
+			Nome
+		</ion-col>
+	  </ion-row>
+	  <ion-row *ngFor="let acao of acoes$ | async">
+		  <ion-col (click)="selecionarAcao()">
+			  {{acao.nome}}
+		  </ion-col>
+	  </ion-row>
+  </ion-grid>
+</ion-content>
