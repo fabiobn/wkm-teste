@@ -7,16 +7,25 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid class="grid">
+	<ion-label class="ion-text-center">
+		Olá, Fulano
+	</ion-label>
+	<ion-grid class="grid">
 	  <ion-row class="header-grid">
 		<ion-col>
 			Nome
 		</ion-col>
-	  </ion-row>
-	  <ion-row *ngFor="let acao of acoes$ | async">
-		  <ion-col (click)="selecionarAcao()">
-			  {{acao.nome}}
+		  <ion-col>
+			  Descrição
 		  </ion-col>
 	  </ion-row>
-  </ion-grid>
+	  <ion-row *ngFor="let acao of acoes$ | async" [routerLink]="['/financeiro/acao-detalhe/', acao.id]">
+		  <ion-col>
+			  {{acao.nome}}
+		  </ion-col>
+		  <ion-col>
+			  {{acao.descricao}}
+		  </ion-col>
+	  </ion-row>
+	</ion-grid>
 </ion-content>
