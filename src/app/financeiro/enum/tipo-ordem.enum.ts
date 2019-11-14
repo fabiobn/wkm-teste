@@ -1,4 +1,4 @@
 export enum TipoOrdemEnum {
-	VENDA,
-	COMPRA
+	VENDA = 'VENDA',
+	COMPRA = 'COMPRA'
 }

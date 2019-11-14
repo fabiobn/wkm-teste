@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {TipoOrdemEnum} from '../enum/tipo-ordem.enum';
 import {AcaoUsuario} from '../model/acao-usuario.model';
 import {Acao} from '../model/acao.model';
 import {FinanceiroServiceModule} from './financeiro.service.module';
@@ -22,7 +23,10 @@ const ACOES_USUARIO: AcaoUsuario[] = [
 		acao: {id: 1, nome: 'COMPANHIA XPTO', descricao: 'DESCRICAO ACAO DA COMPANHIA XPTO', valorUnitario: 5},
 		quantidade: 5,
 		valorTotal: 0,
-		ordens: []
+		ordens: [
+			{id: 1, acao: {id: 1, nome: 'COMPANHIA XPTO', descricao: 'DESCRICAO ACAO DA COMPANHIA XPTO', valorUnitario: 5}, tipo: TipoOrdemEnum.COMPRA, quantidade: 5, valor: 25},
+			{id: 2, acao: {id: 1, nome: 'COMPANHIA XPTO', descricao: 'DESCRICAO ACAO DA COMPANHIA XPTO', valorUnitario: 5}, tipo: TipoOrdemEnum.VENDA, quantidade: 5, valor: 25}
+		]
 	},
 	{
 		id: 2,
@@ -58,7 +62,7 @@ export class FinanceiroService {
 				let acaoUsuario: AcaoUsuario;
 
 				const acaoSelecionadaIndex: number = ACOES.findIndex((acaoDisponivel: Acao) => acaoDisponivel.id === id);
-				const acaoUsuarioIndex = acoesUsuario.findIndex((acao) => acao.id === id);
+				const acaoUsuarioIndex = acoesUsuario.findIndex((acaoUsu) => acaoUsu.acao.id === id);
 
 				if (acaoUsuarioIndex >= 0) {
 					acaoUsuario = {
@@ -66,7 +70,7 @@ export class FinanceiroService {
 						valorTotal: acoesUsuario[acaoUsuarioIndex].acao.valorUnitario * acoesUsuario[acaoUsuarioIndex].quantidade
 					};
 					return of(acaoUsuario);
-				} else
+				} else {
 					acaoUsuario = {
 						acao: ACOES[acaoSelecionadaIndex],
 						quantidade: 0,
@@ -75,6 +79,7 @@ export class FinanceiroService {
 						ordens: []
 					};
 					return of(acaoUsuario);
+				}
 			})
 		)
 	}
