@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {AcaoUsuario} from '../model/acao-usuario.model';
+import {Acao} from '../model/acao.model';
 import {FinanceiroServiceModule} from './financeiro.service.module';
 
 
