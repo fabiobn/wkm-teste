@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+	  <ion-buttons slot="start">
+		  <ion-back-button routerLink="/financeiro"></ion-back-button>
+	  </ion-buttons>
     <ion-title class="ion-text-center">
       Ações
     </ion-title>
@@ -10,10 +13,10 @@
 	<ion-label class="ion-text-center">
 		Olá, Fulano
 	</ion-label>
-	<ng-container *ngIf="acaoUsuario$ | async as acaoUsuario; else naopossuiacao">
+	<ng-container *ngIf="acaoUsuario$ | async as acaoUsuario">
 		<detalhe-acao [acao]="acaoUsuario.acao"></detalhe-acao>
 		<br/>
-		<ion-grid class="grid" >
+		<ion-grid class="grid" *ngIf="!!acaoUsuario.id; else naopossuiacao">
 			<ion-row class="header-grid">
 				<ion-col>
 					Quantidade em mãos
@@ -31,8 +34,12 @@
 				</ion-col>
 			</ion-row>
 		</ion-grid>
+		<ng-template #naopossuiacao>
+			<ion-label class="ion-text-center">Você não possui esta ação.</ion-label>
+		</ng-template>
 	<br/>
-		  <ion-list class="lista-ordens" *ngIf="!!acaoUsuario && !!acaoUsuario.ordens && acaoUsuario.ordens.length > 0">
+		<ng-container *ngIf="!!acaoUsuario.id && !!acaoUsuario.ordens && acaoUsuario.ordens.length > 0">
+		  <ion-list class="lista-ordens">
 			  <ion-list-header>
 				  Ordens
 			  </ion-list-header>
@@ -63,9 +70,7 @@
 				  </ion-grid>
 			  </ion-item>
 		  </ion-list>
+			<ion-button (click)="abrirCriacaoOrdem()">Criar Ordem</ion-button>
+		</ng-container>
 	</ng-container>
-	<ng-template #naopossuiacao>
-		<ion-label>Você não possui esta ação.</ion-label>
-	</ng-template>
-	<ion-button routerLink="/financeiro">Voltar</ion-button>
 </ion-content>
