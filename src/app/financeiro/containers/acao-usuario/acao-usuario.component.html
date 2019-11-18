@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">
+      Ações
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-label class="ion-text-center">
+		Olá, Fulano
+	</ion-label>
+	<ng-container *ngIf="acaoUsuario$ | async as acaoUsuario; else naopossuiacao">
+		<detalhe-acao [acao]="acaoUsuario.acao"></detalhe-acao>
+		  <ion-list class="lista-ordens" *ngIf="!!acaoUsuario && !!acaoUsuario.ordens && acaoUsuario.ordens.length > 0">
+			  <ion-list-header>
+				  Ordens
+			  </ion-list-header>
+			  <ion-item *ngFor="let ordem of acaoUsuario.ordens">
+				  <ion-grid class="grid">
+					  <ion-row class="header-grid">
+						  <ion-col>
+							  Tipo
+						  </ion-col>
+						  <ion-col>
+							  Quantidade
+						  </ion-col>
+						  <ion-col>
+							  Valor
+						  </ion-col>
+					  </ion-row>
+					  <ion-row>
+						  <ion-col>
+							  {{ordem.tipo}}
+						  </ion-col>
+						  <ion-col>
+							  {{ordem.quantidade}}
+						  </ion-col>
+						  <ion-col>
+							  {{ordem.valor}}
+						  </ion-col>
+					  </ion-row>
+				  </ion-grid>
+			  </ion-item>
+		  </ion-list>
+	</ng-container>
+	<ng-template #naopossuiacao>
+		<ion-label>Você não possui esta ação.</ion-label>
+	</ng-template>
+	<ion-button routerLink="/financeiro">Voltar</ion-button>
+</ion-content>

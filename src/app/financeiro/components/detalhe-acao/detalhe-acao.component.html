@@ -1,0 +1,20 @@
+<ion-content>
+	<ion-grid class="grid" >
+	  <ion-row class="header-grid">
+		<ion-col>
+			Ação
+		</ion-col>
+		<ion-col>
+		  Valor da Ação
+		</ion-col>
+	  </ion-row>
+	  <ion-row *ngIf="!!acao">
+		  <ion-col>
+			  {{acao.nome}}
+		  </ion-col>
+		  <ion-col>
+			  {{acao.valorUnitario | currency:'BRL':true}}
+		  </ion-col>
+	  </ion-row>
+	</ion-grid>
+</ion-content>

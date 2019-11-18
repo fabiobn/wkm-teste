@@ -19,7 +19,7 @@
 			  Descrição
 		  </ion-col>
 	  </ion-row>
-	  <ion-row *ngFor="let acao of acoes$ | async" [routerLink]="['/financeiro/acao-detalhe/', acao.id]">
+	  <ion-row *ngFor="let acao of acoes$ | async" [routerLink]="['/financeiro/acao-usuario/', acao.id]">
 		  <ion-col>
 			  {{acao.nome}}
 		  </ion-col>

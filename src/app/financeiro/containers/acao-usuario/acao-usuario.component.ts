@@ -6,11 +6,11 @@ import {AcaoUsuario} from '../../model/acao-usuario.model';
 import {FinanceiroService} from '../../service/financeiro.service';
 
 @Component({
-  selector: 'detalhe-acao',
-  templateUrl: 'detalhe-acao.component.html',
-  styleUrls: ['detalhe-acao.component.scss'],
+  selector: 'acao-usuario',
+  templateUrl: 'acao-usuario.component.html',
+  styleUrls: ['acao-usuario.component.scss'],
 })
-export class DetalheAcaoComponent implements OnInit {
+export class AcaoUsuarioComponent implements OnInit {
 
 	public acaoUsuario$: Observable<AcaoUsuario>;
 
