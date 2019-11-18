@@ -12,6 +12,26 @@
 	</ion-label>
 	<ng-container *ngIf="acaoUsuario$ | async as acaoUsuario; else naopossuiacao">
 		<detalhe-acao [acao]="acaoUsuario.acao"></detalhe-acao>
+		<br/>
+		<ion-grid class="grid" >
+			<ion-row class="header-grid">
+				<ion-col>
+					Quantidade em mãos
+				</ion-col>
+				<ion-col>
+					Valor Total
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col>
+					{{acaoUsuario.quantidade}}
+				</ion-col>
+				<ion-col>
+					{{acaoUsuario.valorTotal | currency:'BRL':true}}
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	<br/>
 		  <ion-list class="lista-ordens" *ngIf="!!acaoUsuario && !!acaoUsuario.ordens && acaoUsuario.ordens.length > 0">
 			  <ion-list-header>
 				  Ordens
