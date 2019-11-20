@@ -21,7 +21,7 @@ const ACOES_USUARIO: AcaoUsuario[] = [
 	{
 		id: 1,
 		acao: {id: 1, nome: 'COMPANHIA XPTO', descricao: 'DESCRICAO ACAO DA COMPANHIA XPTO', valorUnitario: 5},
-		quantidade: 5,
+		quantidade: 50,
 		valorTotal: 0,
 		ordens: [
 			{id: 1, acao: {id: 1, nome: 'COMPANHIA XPTO', descricao: 'DESCRICAO ACAO DA COMPANHIA XPTO', valorUnitario: 5}, tipo: TipoOrdemEnum.COMPRA, quantidade: 5, valor: 25},
@@ -33,7 +33,10 @@ const ACOES_USUARIO: AcaoUsuario[] = [
 		acao: {id: 2, nome: 'EMPRESA ABCD', descricao: 'DESCRICAO ACAO DA EMPRESA ABCD', valorUnitario: 10},
 		quantidade: 10,
 		valorTotal: 0,
-		ordens: []
+		ordens: [
+			{id: 1, acao: {id: 2, nome: 'EMPRESA ABCD', descricao: 'DESCRICAO ACAO DA EMPRESA ABCD', valorUnitario: 10}, tipo: TipoOrdemEnum.COMPRA, quantidade: 5, valor: 50},
+			{id: 2, acao: {id: 2, nome: 'EMPRESA ABCD', descricao: 'DESCRICAO ACAO DA EMPRESA ABCD', valorUnitario: 10}, tipo: TipoOrdemEnum.VENDA, quantidade: 5, valor: 50}
+		]
 	},
 	{
 		id: 7,
@@ -48,6 +51,8 @@ const ACOES_USUARIO: AcaoUsuario[] = [
 	providedIn: FinanceiroServiceModule
 })
 export class FinanceiroService {
+
+	private count = 100;
 
 	constructor() {
 	}
@@ -82,5 +87,9 @@ export class FinanceiroService {
 				}
 			})
 		)
+	}
+
+	obterProximoId() {
+		return this.count++;
 	}
 }

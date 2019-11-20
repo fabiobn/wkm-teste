@@ -1,19 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
 import {CriacaoOrdemComponent} from './components/criacao-ordem/criacao-ordem.component';
+import {DetalheAcaoComponent} from "./components/detalhe-acao/detalhe-acao.component";
 import {AcaoUsuarioComponent} from './containers/acao-usuario/acao-usuario.component';
-import { ListaAcoesComponent } from './containers/lista-acoes/lista-acoes.component';
+import {ListaAcoesComponent} from './containers/lista-acoes/lista-acoes.component';
 import {FinanceiroRoutingModule} from './financeiro-routing.module';
 import {FinanceiroServiceModule} from './service/financeiro.service.module';
-import {DetalheAcaoComponent} from "./components/detalhe-acao/detalhe-acao.component";
 
 @NgModule({
   imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
+  	SharedModule,
   	FinanceiroRoutingModule,
   	FinanceiroServiceModule
   ],

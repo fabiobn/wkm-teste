@@ -1,7 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
-import {TipoOrdemEnum} from '../../enum/tipo-ordem.enum';
-import {Acao} from '../../model/acao.model';
+import {take} from 'rxjs/operators';
+import {AcaoUsuario} from '../../model/acao-usuario.model';
+import {Ordem} from '../../model/ordem.model';
+import {FinanceiroService} from '../../service/financeiro.service';
 
 
 @Component({
@@ -14,18 +17,47 @@ export class CriacaoOrdemComponent implements OnInit {
 	@Input()
 	public idAcaoUsuario: number;
 
-	constructor(private modal: ModalController) {}
+	public formOrdem: FormGroup;
+	private ordem: Ordem;
+	public acaoUsuario: AcaoUsuario;
+	public hasErrorCriacaoOrdem = false;
+	public msgErrorCriacaoOrdem = '';
+
+	constructor(private modal: ModalController, private formBuilder: FormBuilder, private financeiroService: FinanceiroService) {}
 
 	ngOnInit() {
 
+		this.financeiroService.obterAcaoUsuario(this.idAcaoUsuario).pipe(
+			take(1)
+		).subscribe((acao: AcaoUsuario) => this.acaoUsuario = acao);
+
+		this.formOrdem = this.formBuilder.group({
+			tipoOrdem: ['', Validators.required],
+			quantidade: [0, Validators.required],
+			valor: [0]
+		});
+
+	}
+
+	calcularValor() {
+		this.formOrdem.get('valor').setValue(this.acaoUsuario.acao.valorUnitario * this.formOrdem.get('quantidade').value);
 	}
 
 	confirmar() {
-		this.modal.dismiss({id: 30,
-		acao: {id: 1, nome: 'COMPANHIA XPTO', descricao: 'DESCRICAO ACAO DA COMPANHIA XPTO', valorUnitario: 5},
-		tipo: TipoOrdemEnum.VENDA,
-		quantidade: 5,
-		valor: 25});
+		if (!!this.formOrdem.get('quantidade').value) {
+			this.ordem = {
+				id: this.financeiroService.obterProximoId(),
+				acao: this.acaoUsuario.acao,
+				tipo: this.formOrdem.get('tipoOrdem').value,
+				quantidade: this.formOrdem.get('quantidade').value,
+				valor: this.formOrdem.get('valor').value
+			};
+			this.acaoUsuario.ordens.push(this.ordem);
+			this.modal.dismiss(this.ordem);
+		} else {
+			this.hasErrorCriacaoOrdem = true;
+			this.msgErrorCriacaoOrdem = 'A quantidade da ordem não pode ser 0.';
+		}
 	}
 
 	cancelar() {
