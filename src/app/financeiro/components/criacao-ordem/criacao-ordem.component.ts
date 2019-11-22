@@ -5,6 +5,9 @@ import {take} from 'rxjs/operators';
 import {AcaoUsuario} from '../../model/acao-usuario.model';
 import {Ordem} from '../../model/ordem.model';
 import {FinanceiroService} from '../../service/financeiro.service';
+import {Erro} from "../../model/erro.model";
+import {Observable} from "rxjs";
+import {TipoStatusOrdemEnum} from "../../enum/tipo-status-ordem.enum";
 
 
 @Component({
@@ -46,14 +49,21 @@ export class CriacaoOrdemComponent implements OnInit {
 	confirmar() {
 		if (!!this.formOrdem.get('quantidade').value) {
 			this.ordem = {
-				id: this.financeiroService.obterProximoId(),
+				id: null,
 				acao: this.acaoUsuario.acao,
 				tipo: this.formOrdem.get('tipoOrdem').value,
 				quantidade: this.formOrdem.get('quantidade').value,
 				valor: this.formOrdem.get('valor').value
 			};
-			this.acaoUsuario.ordens.push(this.ordem);
-			this.modal.dismiss(this.ordem);
+			this.financeiroService.incluirOrdem(this.acaoUsuario.id, this.ordem).pipe(
+				take(1),
+			).subscribe(
+			(novaOrdem: Ordem) => this.modal.dismiss(novaOrdem),
+				(erro: Erro) => {
+					this.hasErrorCriacaoOrdem = true;
+					this.msgErrorCriacaoOrdem = erro.mensagem;
+				}
+			);
 		} else {
 			this.hasErrorCriacaoOrdem = true;
 			this.msgErrorCriacaoOrdem = 'A quantidade da ordem não pode ser 0.';
