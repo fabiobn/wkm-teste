@@ -1,8 +1,8 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ModalController} from '@ionic/angular';
-import {from, Observable, Subscription} from 'rxjs';
-import {map, switchMap, take, tap} from 'rxjs/operators';
+import {from, Subscription} from 'rxjs';
+import {map, take} from 'rxjs/operators';
 import {CriacaoOrdemComponent} from '../../components/criacao-ordem/criacao-ordem.component';
 import {AcaoUsuario} from '../../model/acao-usuario.model';
 import {Ordem} from '../../model/ordem.model';
@@ -25,6 +25,7 @@ export class AcaoUsuarioComponent implements OnInit {
 	constructor(private financeiroService: FinanceiroService, private route: ActivatedRoute, private modal: ModalController) {}
 
 	ngOnInit() {
+		// Obter o parâmetro com o id da ação selecionada
 		this.route.paramMap.pipe(
 			map((params: ParamMap) => Number(params.get('id'))),
 			take(1)
@@ -33,11 +34,17 @@ export class AcaoUsuarioComponent implements OnInit {
 		});
 	}
 
+	/**
+	 * Obter as informações da ação do usuário ao entrar na página de detalhe de ação do usuário.
+	 */
 	@HostListener('ionViewWillEnter')
 	viewWillEnter() {
 		this.acaoUsuario = this.financeiroService.obterAcaoUsuario(this.idAcaoUsuario);
 	}
 
+	/**
+	 * Abrir o modal de criação de nova ordem para ação do usuário.
+	 */
 	abrirCriacaoOrdem() {
 		this.modal.create({
 			component: CriacaoOrdemComponent,
@@ -58,6 +65,9 @@ export class AcaoUsuarioComponent implements OnInit {
 		});
 	}
 
+	/**
+	 * Tratar unsubscribe ao voltar do detalhe da ação do usuário.
+	 */
 	@HostListener('ionViewWillLeave')
 	voltar() {
 		if (this.subscriptions)

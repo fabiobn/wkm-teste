@@ -14,6 +14,7 @@ export class ListaAcoesComponent implements OnInit {
   constructor(private financeiroService: FinanceiroService) {}
 
 	ngOnInit() {
+  		// Listar as ações disponíveis
 		this.acoes = this.financeiroService.listarAcoes();
 	}
 }
