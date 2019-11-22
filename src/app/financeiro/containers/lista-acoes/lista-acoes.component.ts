@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
 import {Acao} from '../../model/acao.model';
 import {FinanceiroService} from '../../service/financeiro.service';
 
@@ -10,15 +9,11 @@ import {FinanceiroService} from '../../service/financeiro.service';
 })
 export class ListaAcoesComponent implements OnInit {
 
-	public acoes$: Observable<Acao[]>;
+	public acoes: Acao[];
 
   constructor(private financeiroService: FinanceiroService) {}
 
 	ngOnInit() {
-		this.acoes$ = this.financeiroService.listarAcoes();
-	}
-
-	selecionarAcao() {
-  		console.log("selecionou acao");
+		this.acoes = this.financeiroService.listarAcoes();
 	}
 }

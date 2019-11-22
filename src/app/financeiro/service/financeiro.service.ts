@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, of, throwError} from 'rxjs';
-import {exhaustMap, map, switchMap} from 'rxjs/operators';
+import {exhaustMap, map} from 'rxjs/operators';
 import {TipoOrdemEnum} from '../enum/tipo-ordem.enum';
 import {AcaoUsuario} from '../model/acao-usuario.model';
 import {Acao} from '../model/acao.model';
@@ -59,104 +59,89 @@ export class FinanceiroService {
 	constructor() {
 	}
 
-	listarAcoes(): Observable<Acao[]> {
-		return of(ACOES);
+	listarAcoes(): Acao[] {
+		return ACOES;
 	}
 
-	obterAcaoUsuario(id: number): Observable<AcaoUsuario> {
-		return of(ACOES_USUARIO).pipe(
-			switchMap((acoesUsuario: AcaoUsuario[]) => {
-				let acaoUsuario: AcaoUsuario;
+	obterAcaoUsuario(id: number): AcaoUsuario {
 
-				const acaoSelecionadaIndex: number = ACOES.findIndex((acaoDisponivel: Acao) => acaoDisponivel.id === id);
-				const acaoUsuarioIndex = acoesUsuario.findIndex((acaoUsu) => acaoUsu.acao.id === id);
+		const acaoSelecionadaIndex: number = ACOES.findIndex((acaoDisponivel: Acao) => acaoDisponivel.id === id);
+		const acaoUsuarioIndex = ACOES_USUARIO.findIndex((acaoUsu) => acaoUsu.acao.id === id);
 
-				if (acaoUsuarioIndex >= 0) {
-					acaoUsuario = {
-						...acoesUsuario[acaoUsuarioIndex],
-						valorTotal: acoesUsuario[acaoUsuarioIndex].acao.valorUnitario * acoesUsuario[acaoUsuarioIndex].quantidade
-					};
-					return of(acaoUsuario);
-				} else {
-					acaoUsuario = {
-						acao: ACOES[acaoSelecionadaIndex],
-						quantidade: 0,
-						valorTotal: 0,
-						id: null,
-						ordens: []
-					};
-					return of(acaoUsuario);
-				}
-			})
-		)
+		if (acaoUsuarioIndex >= 0) {
+			ACOES_USUARIO[acaoUsuarioIndex].valorTotal = ACOES_USUARIO[acaoUsuarioIndex].acao.valorUnitario * ACOES_USUARIO[acaoUsuarioIndex].quantidade;
+			return ACOES_USUARIO[acaoUsuarioIndex];
+		} else {
+			return {
+				acao: ACOES[acaoSelecionadaIndex],
+				quantidade: 0,
+				valorTotal: 0,
+				id: null,
+				ordens: []
+			};
+		}
 	}
 
-	obterProximoId(): number {
-		return this.count++;
-	}
+	incluirOrdem(idAcaoUsuario: number, ordem: Ordem): Ordem {
+		const acaoUsuario =  ACOES_USUARIO.find((acao: AcaoUsuario) => acao.id === idAcaoUsuario);
+		if (!!acaoUsuario && !!ordem) {
+			if (TipoOrdemEnum.VENDA === ordem.tipo) {
+				const quantidadeTotalOrdemVendaAbertas = acaoUsuario.ordens.reduce(
+					(total: number, o: Ordem) => TipoOrdemEnum.VENDA  === o.tipo ? total + o.quantidade : total,
+				0);
 
-	incluirOrdem(idAcaoUsuario: number, ordem: Ordem): Observable<Ordem> {
-		return of(idAcaoUsuario).pipe(
-			map((id: number) => ACOES_USUARIO.find((acao: AcaoUsuario) => acao.id === id)),
-			exhaustMap((acaoUsuario: AcaoUsuario) => {
-				if (!!acaoUsuario && !!ordem) {
-					if (TipoOrdemEnum.VENDA === ordem.tipo) {
-						const quantidadeTotalOrdemVendaAbertas = acaoUsuario.ordens.reduce(
-							(total: number, o: Ordem) => TipoOrdemEnum.VENDA  === o.tipo ? total + o.quantidade : total,
-						0);
-
-						if (quantidadeTotalOrdemVendaAbertas + ordem.quantidade > acaoUsuario.quantidade) {
-							const erro: Erro = {
-								codigo: 2,
-								mensagem: 'O usuário não possui quantidade suficiente de ações para criar esta ordem de venda.',
-								detalhe: 'O usuário não possui quantidade suficiente para o somatório das quantidades das ordens de venda em aberto e a quantidade desta ordem de venda.'
-							};
-							return throwError(erro);
-						}
-					}
-					let isOrdemAberta = false;
-					if (TipoOrdemEnum.VENDA === ordem.tipo) {
-						const menorValorOrdemVendaAberto = acaoUsuario.ordens.reduce(
-							(menorValor: number, o: Ordem) => {
-								if (TipoOrdemEnum.VENDA  === o.tipo) {
-									if (menorValor < 0 || o.valor < menorValor)
-										return o.valor;
-								}
-								return menorValor;
-							}, -1);
-						if (ordem.valor < menorValorOrdemVendaAberto)
-							isOrdemAberta = true;
-					}
-					if (!isOrdemAberta && TipoOrdemEnum.COMPRA === ordem.tipo) {
-						const maiorValorOrdemCompraAberto = acaoUsuario.ordens.reduce(
-							(maiorValor: number, o: Ordem) => {
-								if (TipoOrdemEnum.COMPRA  === o.tipo) {
-									if (maiorValor < 0 || o.valor > maiorValor)
-										return o.valor;
-								}
-								return maiorValor;
-							}, -1);
-						if (ordem.valor > maiorValorOrdemCompraAberto)
-							isOrdemAberta = true;
-					}
-
-					ordem.id = this.count++;
-
-					if (isOrdemAberta)
-						acaoUsuario.ordens.push(ordem);
-					else
-						acaoUsuario.quantidade = TipoOrdemEnum.COMPRA ? (acaoUsuario.quantidade + ordem.quantidade) : (acaoUsuario.quantidade - ordem.quantidade);
-
-					return of(ordem);
-				} else {
+				if (quantidadeTotalOrdemVendaAbertas + ordem.quantidade > acaoUsuario.quantidade) {
 					const erro: Erro = {
-						codigo: 1,
-						mensagem: 'Problema ao criar a ordem para a ação do usuário.',
-						detalhe: 'Problema no objeto de ação usuário ou ordem a ser criada.'
+						codigo: 2,
+						mensagem: 'O usuário não possui quantidade suficiente de ações para criar esta ordem de venda.',
+						detalhe: 'O usuário não possui quantidade suficiente para o somatório das quantidades das ordens de venda em aberto e a quantidade desta ordem de venda.'
 					};
-					return throwError(erro);
+					throw erro;
 				}
-			})
-		);
+			}
+			let isOrdemAberta = false;
+			if (TipoOrdemEnum.VENDA === ordem.tipo) {
+				const menorValorOrdemVendaAberto = acaoUsuario.ordens.reduce(
+					(menorValor: number, o: Ordem) => {
+						if (TipoOrdemEnum.VENDA  === o.tipo) {
+							if (menorValor < 0 || o.valor < menorValor)
+								return o.valor;
+						}
+						return menorValor;
+					}, -1);
+				if (ordem.valor < menorValorOrdemVendaAberto)
+					isOrdemAberta = true;
+			}
+			if (!isOrdemAberta && TipoOrdemEnum.COMPRA === ordem.tipo) {
+				const maiorValorOrdemCompraAberto = acaoUsuario.ordens.reduce(
+					(maiorValor: number, o: Ordem) => {
+						if (TipoOrdemEnum.COMPRA  === o.tipo) {
+							if (maiorValor < 0 || o.valor > maiorValor)
+								return o.valor;
+						}
+						return maiorValor;
+					}, -1);
+				if (ordem.valor > maiorValorOrdemCompraAberto)
+					isOrdemAberta = true;
+			}
+
+			ordem.id = this.count++;
+
+			if (isOrdemAberta)
+				acaoUsuario.ordens.push(ordem);
+			else {
+				acaoUsuario.quantidade = TipoOrdemEnum.COMPRA === ordem.tipo ? (acaoUsuario.quantidade + ordem.quantidade) : (acaoUsuario.quantidade - ordem.quantidade);
+				acaoUsuario.valorTotal = acaoUsuario.acao.valorUnitario * acaoUsuario.quantidade;
+			}
+
+			return ordem;
+		} else {
+			const erro: Erro = {
+				codigo: 1,
+				mensagem: 'Problema ao criar a ordem para a ação do usuário.',
+				detalhe: 'Problema no objeto de ação usuário ou ordem a ser criada.'
+			};
+			throw erro;
+		}
 	}
 }

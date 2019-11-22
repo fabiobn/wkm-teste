@@ -1,13 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
-import {take} from 'rxjs/operators';
 import {AcaoUsuario} from '../../model/acao-usuario.model';
 import {Ordem} from '../../model/ordem.model';
 import {FinanceiroService} from '../../service/financeiro.service';
-import {Erro} from "../../model/erro.model";
-import {Observable} from "rxjs";
-import {TipoStatusOrdemEnum} from "../../enum/tipo-status-ordem.enum";
+import {Erro} from '../../model/erro.model';
 
 
 @Component({
@@ -30,9 +27,7 @@ export class CriacaoOrdemComponent implements OnInit {
 
 	ngOnInit() {
 
-		this.financeiroService.obterAcaoUsuario(this.idAcaoUsuario).pipe(
-			take(1)
-		).subscribe((acao: AcaoUsuario) => this.acaoUsuario = acao);
+		this.acaoUsuario = this.financeiroService.obterAcaoUsuario(this.idAcaoUsuario);
 
 		this.formOrdem = this.formBuilder.group({
 			tipoOrdem: ['', Validators.required],
@@ -55,15 +50,13 @@ export class CriacaoOrdemComponent implements OnInit {
 				quantidade: this.formOrdem.get('quantidade').value,
 				valor: this.formOrdem.get('valor').value
 			};
-			this.financeiroService.incluirOrdem(this.acaoUsuario.id, this.ordem).pipe(
-				take(1),
-			).subscribe(
-			(novaOrdem: Ordem) => this.modal.dismiss(novaOrdem),
-				(erro: Erro) => {
-					this.hasErrorCriacaoOrdem = true;
-					this.msgErrorCriacaoOrdem = erro.mensagem;
-				}
-			);
+			try {
+				const novaOrdem: Ordem = this.financeiroService.incluirOrdem(this.acaoUsuario.id, this.ordem);
+				this.modal.dismiss(novaOrdem);
+			} catch(erro) {
+				this.hasErrorCriacaoOrdem = true;
+				this.msgErrorCriacaoOrdem = erro.mensagem;
+			}
 		} else {
 			this.hasErrorCriacaoOrdem = true;
 			this.msgErrorCriacaoOrdem = 'A quantidade da ordem não pode ser 0.';

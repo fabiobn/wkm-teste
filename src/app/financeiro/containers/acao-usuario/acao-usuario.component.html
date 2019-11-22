@@ -13,7 +13,7 @@
 	<ion-label class="ion-text-center">
 		Olá, Fulano
 	</ion-label>
-	<ng-container *ngIf="acaoUsuario$ | async as acaoUsuario">
+	<ng-container *ngIf="!!acaoUsuario">
 		<detalhe-acao [acao]="acaoUsuario.acao"></detalhe-acao>
 		<br/>
 		<ion-grid class="grid" *ngIf="!!acaoUsuario.id; else naopossuiacao">
