@@ -1,8 +1,8 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {ModalController} from '@ionic/angular';
-import {from, Observable, Subscription} from 'rxjs';
-import {map, switchMap, take, tap} from 'rxjs/operators';
+import {from, Subscription} from 'rxjs';
+import {map, take} from 'rxjs/operators';
 import {CriacaoOrdemComponent} from '../../components/criacao-ordem/criacao-ordem.component';
 import {AcaoUsuario} from '../../model/acao-usuario.model';
 import {Ordem} from '../../model/ordem.model';

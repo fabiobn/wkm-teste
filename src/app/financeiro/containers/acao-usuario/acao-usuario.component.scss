@@ -1,7 +1,12 @@
-
+ion-title {
+	padding-left: 0px;
+}
 .grid {
 	border: 1px solid #000000;
 	width: 90%;
+	font-size: 0.5857em;
+	font-family: 'Roboto', sans-serif;
+	font-style: normal;
 }
 
 .header-grid {
@@ -12,4 +17,11 @@
 .lista-ordens {
 	border: 1px solid #000000;
 	width: 90%;
+	font-size: 0.5857em;
+	font-family: 'Roboto', sans-serif;
+	font-style: normal;
+  .conteudo-lista {
+    max-height: 200px;
+    overflow-y: scroll
+  }
 }

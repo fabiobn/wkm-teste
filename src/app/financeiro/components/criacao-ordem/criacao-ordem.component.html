@@ -1,50 +1,54 @@
 <ion-header>
-	<ion-toolbar>
-		<ion-title class="ion-text-center">
-			Ordem
-		</ion-title>
-	</ion-toolbar>
+	<header-pagina titulo="Ordem"></header-pagina>
 </ion-header>
 
 <ion-content>
 
-	<form [formGroup]="formOrdem">
+	<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+		<form [formGroup]="formOrdem">
 
-		<ion-item>
-			<ion-label>Tipo da Ordem</ion-label>
-			<ion-radio-group formControlName="tipoOrdem">
-				<ion-item>
-					<ion-label>Compra</ion-label>
-					<ion-radio slot="start" value="COMPRA"></ion-radio>
-				</ion-item>
+			<ion-item>
+				<ion-label>Tipo da Ordem</ion-label>
+				<ion-radio-group formControlName="tipoOrdem">
+					<ion-item>
+						<ion-label>Compra</ion-label>
+						<ion-radio slot="start" value="COMPRA"></ion-radio>
+					</ion-item>
 
-				<ion-item>
-					<ion-label>Venda</ion-label>
-					<ion-radio slot="start" value="VENDA"></ion-radio>
-				</ion-item>
-			</ion-radio-group>
-		</ion-item>
+					<ion-item>
+						<ion-label>Venda</ion-label>
+						<ion-radio slot="start" value="VENDA"></ion-radio>
+					</ion-item>
+				</ion-radio-group>
+			</ion-item>
 
-		<ion-item>
-			<ion-label>Quantidade</ion-label>
-			<ion-input type="number" formControlName="quantidade" (ionBlur)="calcularValor()"></ion-input>
-			<div *ngIf="formOrdem.get('quantidade').invalid && (formOrdem.get('quantidade').dirty || formOrdem.get('quantidade').touched)" class="msg-erro">
-				<div *ngIf="formOrdem.get('quantidade').errors.required">
-					Quantidade é obrigatória.
+			<ion-item>
+				<div  fxLayout="column" fxLayoutAlign="center center">
+					<div fxLayout="row" fxLayoutAlign="start center">
+						<ion-label>Quantidade</ion-label>
+						<ion-input type="number" formControlName="quantidade" (ionBlur)="calcularValor()"></ion-input>
+					</div>
+					<div *ngIf="formOrdem.get('quantidade').invalid && (formOrdem.get('quantidade').dirty || formOrdem.get('quantidade').touched)" class="msg-erro">
+						<div *ngIf="formOrdem.get('quantidade').errors.required">
+							Quantidade é obrigatória.
+						</div>
+					</div>
 				</div>
-			</div>
-		</ion-item>
+			</ion-item>
 
-		<ion-item>
-			<ion-label>Valor</ion-label>
-			<ion-label>{{formOrdem.get('valor').value | currency:'BRL':true}}</ion-label>
-		</ion-item>
+			<ion-item>
+				<ion-label>Valor</ion-label>
+				<ion-label>{{formOrdem.get('valor').value | currency:'BRL':true}}</ion-label>
+			</ion-item>
 
-	</form>
+		</form>
 
-	<ion-button (click)="confirmar()" [disabled]="!formOrdem.valid">Confirmar</ion-button>
-	<ion-button (click)="cancelar()">Cancelar</ion-button>
-	<div *ngIf="hasErrorCriacaoOrdem" class="msg-erro">
-		<span>{{msgErrorCriacaoOrdem}}</span>
+		<div>
+			<ion-button (click)="confirmar()" [disabled]="!formOrdem.valid">Confirmar</ion-button>
+			<ion-button (click)="cancelar()">Cancelar</ion-button>
+		</div>
+		<div *ngIf="hasErrorCriacaoOrdem" class="msg-erro">
+			<span>{{msgErrorCriacaoOrdem}}</span>
+		</div>
 	</div>
 </ion-content>

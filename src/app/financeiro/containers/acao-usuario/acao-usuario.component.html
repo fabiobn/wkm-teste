@@ -1,21 +1,12 @@
 <ion-header>
-  <ion-toolbar>
-	  <ion-buttons slot="start">
-		  <ion-back-button routerLink="/financeiro"></ion-back-button>
-	  </ion-buttons>
-    <ion-title class="ion-text-center">
-      Ações
-    </ion-title>
-  </ion-toolbar>
+	<header-pagina titulo="Ações" [showBackButton]="true" linkBackButton="/financeiro"></header-pagina>
 </ion-header>
 
 <ion-content>
-	<ion-label class="ion-text-center">
-		Olá, Fulano
-	</ion-label>
+	<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+	<header-usuario></header-usuario>
 	<ng-container *ngIf="!!acaoUsuario">
 		<detalhe-acao [acao]="acaoUsuario.acao"></detalhe-acao>
-		<br/>
 		<ion-grid class="grid" *ngIf="!!acaoUsuario.id; else naopossuiacao">
 			<ion-row class="header-grid">
 				<ion-col>
@@ -37,40 +28,42 @@
 		<ng-template #naopossuiacao>
 			<ion-label class="ion-text-center">Você não possui esta ação.</ion-label>
 		</ng-template>
-	<br/>
 		<ng-container *ngIf="!!acaoUsuario.id && !!acaoUsuario.ordens && acaoUsuario.ordens.length > 0">
 		  <ion-list class="lista-ordens">
 			  <ion-list-header>
 				  Ordens
 			  </ion-list-header>
-			  <ion-item *ngFor="let ordem of acaoUsuario.ordens">
-				  <ion-grid class="grid">
-					  <ion-row class="header-grid">
-						  <ion-col>
-							  Tipo
-						  </ion-col>
-						  <ion-col>
-							  Quantidade
-						  </ion-col>
-						  <ion-col>
-							  Valor
-						  </ion-col>
-					  </ion-row>
-					  <ion-row>
-						  <ion-col>
-							  {{ordem.tipo}}
-						  </ion-col>
-						  <ion-col>
-							  {{ordem.quantidade}}
-						  </ion-col>
-						  <ion-col>
-							  {{ordem.valor | currency:'BRL':true}}
-						  </ion-col>
-					  </ion-row>
-				  </ion-grid>
-			  </ion-item>
+			  <div class="conteudo-lista">
+				  <ion-item *ngFor="let ordem of acaoUsuario.ordens">
+					  <ion-grid class="grid">
+						  <ion-row class="header-grid">
+							  <ion-col>
+								  Tipo
+							  </ion-col>
+							  <ion-col>
+								  Quantidade
+							  </ion-col>
+							  <ion-col>
+								  Valor
+							  </ion-col>
+						  </ion-row>
+						  <ion-row>
+							  <ion-col>
+								  {{ordem.tipo}}
+							  </ion-col>
+							  <ion-col>
+								  {{ordem.quantidade}}
+							  </ion-col>
+							  <ion-col>
+								  {{ordem.valor | currency:'BRL':true}}
+							  </ion-col>
+						  </ion-row>
+					  </ion-grid>
+				  </ion-item>
+			  </div>
 		  </ion-list>
-			<ion-button (click)="abrirCriacaoOrdem()">Criar Ordem</ion-button>
+		<ion-button (click)="abrirCriacaoOrdem()">Criar Ordem</ion-button>
 		</ng-container>
 	</ng-container>
+	</div>
 </ion-content>
